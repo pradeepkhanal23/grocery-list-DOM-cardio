@@ -1,23 +1,9 @@
-//getting all elements first from the DOM using query selector
-
-//Buttons
-
 //-----------------------------DOM Elements-----------------------------------------
-
-//Buttons
 const submitBtn = document.querySelector(".btn");
-
-//form Inputs
 const itemInput = document.querySelector(".form-input");
 const filterInput = document.querySelector(".form-input-filter");
-
-//form
 const form = document.querySelector("#item-form");
-
-//list items
 const itemList = document.querySelector("ul");
-
-//wrapper
 const container = document.querySelector(".container");
 
 //-----------------------------Functions-----------------------------------------------
@@ -44,6 +30,7 @@ function clearList(e) {
   e.preventDefault();
 
   itemList.innerHTML = "";
+  e.target.remove();
 }
 
 //----------------Add Item Function-----------------------------------------------------
@@ -75,14 +62,12 @@ function addItem(e) {
 
     itemList.appendChild(li);
 
-    const clearBtn = createElement("button", "btn-clear");
-    clearBtn.appendChild(document.createTextNode("Clear All"));
-
-    itemList.insertAdjacentElement("afterend", clearBtn);
-
-    clearBtn.addEventListener("click", () => {
-      itemList.innerHTML = "";
-    });
+    if (!document.querySelector(".btn-clear")) {
+      const clearBtn = createElement("button", "btn-clear");
+      clearBtn.appendChild(document.createTextNode("Clear All"));
+      itemList.insertAdjacentElement("afterend", clearBtn);
+      clearBtn.addEventListener("click", clearList);
+    }
 
     itemInput.value = "";
   }

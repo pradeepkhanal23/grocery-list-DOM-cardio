@@ -15,6 +15,22 @@ function createElement(elementType, className = "") {
   return element;
 }
 
+// -------------------Function to handle all the UI related Operation of inserting or deleting elements based on certain actions-------------------------------------------------------------------------------
+function updateUI() {
+  //adding clear all button after a list item is added to the list
+  if (!document.querySelector(".btn-clear")) {
+    const clearBtn = createElement("button", "btn-clear");
+    clearBtn.appendChild(document.createTextNode("Clear All"));
+    itemList.insertAdjacentElement("afterend", clearBtn);
+    clearBtn.addEventListener("click", clearList);
+  }
+
+  //if after deleting , the last li is deleted, it checks the child element count and remove the clear all button if there is no any li left
+  if (itemList.childElementCount < 1) {
+    document.querySelector(".btn-clear").remove();
+  }
+}
+
 //----------------Handle Click Functions-----------------------------------------------------
 function handleClick(e) {
   e.preventDefault();
@@ -23,6 +39,8 @@ function handleClick(e) {
   if (e.target.tagName === "I" && e.target.classList.contains("fa-xmark")) {
     e.target.parentElement.parentElement.parentElement.remove();
   }
+
+  updateUI();
 }
 
 //-------------------Clear List Function---------------------------------------------------
@@ -62,12 +80,7 @@ function addItem(e) {
 
     itemList.appendChild(li);
 
-    if (!document.querySelector(".btn-clear")) {
-      const clearBtn = createElement("button", "btn-clear");
-      clearBtn.appendChild(document.createTextNode("Clear All"));
-      itemList.insertAdjacentElement("afterend", clearBtn);
-      clearBtn.addEventListener("click", clearList);
-    }
+    updateUI();
 
     itemInput.value = "";
   }

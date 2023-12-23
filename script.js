@@ -6,8 +6,6 @@ const form = document.querySelector("#item-form");
 const itemList = document.querySelector("ul");
 const container = document.querySelector(".container");
 
-//-----------------------------Functions-----------------------------------------------
-
 //----------------Create Element Function-----------------------------------------------------
 function createElement(elementType, className = "") {
   const element = document.createElement(elementType);
@@ -15,7 +13,36 @@ function createElement(elementType, className = "") {
   return element;
 }
 
-// -------------------Function to handle all the UI related Operation of inserting or deleting elements based on certain actions-------------------------------------------------------------------------------
+function appendToUI(li) {
+  itemList.innerHTML = "";
+  itemList.appendChild(li);
+}
+
+//----------------Create List Item(li) Function and append to UL-----------------------------------------------------
+function createLi(LiTextContent) {
+  const li = createElement("li");
+  const btnContainer = createElement("div", "btn-container");
+  const EditButton = createElement("button", "edit-item btn-link text-green");
+  const removeButton = createElement("button", "remove-item btn-link text-red");
+  const removeIcon = createElement("i", "fa-solid fa-xmark");
+  const editIcon = createElement("i", "fa-solid fa-pen-to-square");
+  const text = document.createTextNode(LiTextContent);
+
+  li.appendChild(text);
+  li.appendChild(btnContainer);
+  btnContainer.appendChild(removeButton);
+  btnContainer.appendChild(EditButton);
+  removeButton.appendChild(removeIcon);
+  EditButton.appendChild(editIcon);
+
+  addToUL(li);
+}
+
+function addToUL(li) {
+  itemList.appendChild(li);
+}
+
+/* Function to handle all the UI related Operation of inserting or deleting elements based on certain actions  */
 function updateUI() {
   //adding clear all button after a list item is added to the list
   if (!document.querySelector(".btn-clear")) {
@@ -25,13 +52,13 @@ function updateUI() {
     clearBtn.addEventListener("click", clearList);
   }
 
-  //if after deleting , the last li is deleted, it checks the child element count and remove the clear all button if there is no any li left
+  /* if after deleting , the last li is deleted, it checks the child element count and remove the clear all button if there is no any li left*/
   if (itemList.childElementCount < 1) {
     document.querySelector(".btn-clear").remove();
   }
 }
 
-//----------------Handle Click Functions-----------------------------------------------------
+//----------------Handle Click Function-----------------------------------------------------
 function handleClick(e) {
   e.preventDefault();
 
@@ -41,6 +68,25 @@ function handleClick(e) {
   }
 
   updateUI();
+}
+
+//----------------Handle Filter Function-----------------------------------------------------
+function handleFilter(e) {
+  if (document.querySelectorAll("li").length !== 0) {
+    const items = Array.from(document.querySelectorAll("li"));
+    const targetLi = items
+      .map((item) => {
+        return item;
+      })
+      .filter((item) => {
+        if (item.textContent.includes(e.target.value)) {
+          return item;
+        }
+      })
+      .map((item) => {
+        appendToUI(item);
+      });
+  }
 }
 
 //-------------------Clear List Function---------------------------------------------------
@@ -59,26 +105,7 @@ function addItem(e) {
   if (itemInput.value === "") {
     alert("Please Enter an Item");
   } else {
-    //creating a list item
-    const li = createElement("li");
-    const btnContainer = createElement("div", "btn-container");
-    const EditButton = createElement("button", "edit-item btn-link text-green");
-    const removeButton = createElement(
-      "button",
-      "remove-item btn-link text-red"
-    );
-    const removeIcon = createElement("i", "fa-solid fa-xmark");
-    const editIcon = createElement("i", "fa-solid fa-pen-to-square");
-    const text = document.createTextNode(itemInput.value);
-
-    li.appendChild(text);
-    li.appendChild(btnContainer);
-    btnContainer.appendChild(removeButton);
-    btnContainer.appendChild(EditButton);
-    removeButton.appendChild(removeIcon);
-    EditButton.appendChild(editIcon);
-
-    itemList.appendChild(li);
+    createLi(itemInput.value);
 
     updateUI();
 
@@ -90,3 +117,4 @@ function addItem(e) {
 
 form.addEventListener("submit", addItem);
 itemList.addEventListener("click", handleClick);
+filterInput.addEventListener("input", handleFilter);

@@ -42,8 +42,8 @@ header h1 {
 }
 
 .container {
-  max-width: 25rem;
-  margin: 1rem auto;
+  max-width: 450px;
+  margin: 2rem auto;
   padding: 1rem 2rem;
   background-color: white;
   border-radius: 1rem;
@@ -140,10 +140,16 @@ header h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
+  width: 45%;
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 10px 15px;
   margin: 0 5px 20px;
   font-weight: 700;
+}
+
+@media (max-width: 500px) {
+  .items li {
+    width: 100%;
+  }
 }

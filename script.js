@@ -74,6 +74,22 @@ function addItem(e) {
   }
 }
 
+function filterItems(e) {
+  e.preventDefault();
+
+  const filterText = e.target.value.toLowerCase();
+  const items = itemList.querySelectorAll("li");
+
+  items.forEach((item) => {
+    const itemName = item.firstChild.textContent.toLowerCase();
+    if (itemName.includes(filterText)) {
+      item.style.display = "flex";
+    } else {
+      item.style.display = "none";
+    }
+  });
+}
+
 /* function to check UI after page load to make sure we need to display filter input and clear all button to make it look more dynamic */
 
 function updateUI() {
@@ -96,5 +112,6 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", addItem);
   itemList.addEventListener("click", removeItem);
   clearBtn.addEventListener("click", clearItems);
+  filterInput.addEventListener("input", filterItems);
   updateUI();
 });

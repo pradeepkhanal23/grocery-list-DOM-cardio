@@ -5,6 +5,7 @@ const itemInput = document.querySelector(".form-input");
 const filterInput = document.querySelector(".form-input-filter");
 const form = document.querySelector("#item-form");
 const itemList = document.querySelector("#item-list");
+let editMode = false;
 
 //----------------Create Element Function------------------------------------------------------------
 function createElement(elementType, className = "") {
@@ -65,13 +66,32 @@ function removeItem(item) {
   }
 }
 
+//------------------Edit click function----------------------------------------------
+function onEditClick(itemToEdit) {
+  items = document.querySelectorAll("li").forEach((li) => {
+    li.classList.remove("edit-mode");
+  });
+
+  itemToEdit.classList.add("edit-mode");
+  submitBtn.style.backgroundColor = "green";
+  submitBtn.innerHTML = `<i class="fa-solid fa-pen"> </i>  Update Item`;
+  itemInput.value = itemToEdit.textContent;
+}
+
 //-------------------Handle Delete Click Function-------------------------------------
-function onDeleteClick(e) {
+function onDeleteAndEditClick(e) {
   e.preventDefault();
 
   //check for the target button and delete
   if (e.target.tagName === "I" && e.target.classList.contains("fa-xmark")) {
     removeItem(e.target.parentElement.parentElement.parentElement);
+  }
+  if (
+    e.target.tagName === "I" &&
+    e.target.classList.contains("fa-pen-to-square")
+  ) {
+    editMode = true;
+    onEditClick(e.target.parentElement.parentElement.parentElement);
   }
 
   //check again for UI change as we made a change in the list(i.e removed a data)
@@ -132,6 +152,37 @@ function addItemSubmit(e) {
     return;
   }
 
+  //check for edit mode
+  if (editMode) {
+    //we are removing the the edit item completely and adding the updated item as a new item in the DOM and UI
+
+    //selecting the li with the class of edit mode
+    const itemToEdit = itemList.querySelector(".edit-mode");
+
+    //removing it from the local storage
+    removeItemFromLocalStorage(itemToEdit.textContent);
+
+    //removing the edit mode class as well as it is being deleted
+    itemToEdit.classList.remove("edit-mode");
+
+    //removing the item from the DOM finally
+    itemToEdit.remove();
+
+    //bringing back the original add item state after hitting enter
+    submitBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Add Item`;
+    submitBtn.style.backgroundColor = "#333";
+
+    //toggling the edit mode as our edit is finised
+    editMode = false;
+  } else {
+    /* the duplicate check is added as an else to edit mode because in edit mode when we click edit mode and try to submit again without editing the item , the duplicate fucntion will stop it from being added to the list so when we check for duplicate in the else state of edit mode, it bypasses that check and helps us to add the item to list list which was intended to edit and not edited and submitted back as it is*/
+    ///checking for duplicates
+    if (checkForDuplicates(newItem)) {
+      alert("Item already exists");
+      return;
+    }
+  }
+
   //adding item to the DOM and assigning associated classes and buttons with their respective classes
   addToDOM(newItem);
 
@@ -143,6 +194,12 @@ function addItemSubmit(e) {
 
   //clearing the input content = ""
   itemInput.value = "";
+}
+
+//checking for duplicates function
+function checkForDuplicates(item) {
+  const existingItems = new Set(getLocalStorageItems()); //using Set for unique value and faster lookups
+  return existingItems.has(item.toLowerCase());
 }
 
 //adding the item to the local storage
@@ -190,7 +247,7 @@ function updateUI() {
 /* adding all the event listeners inside DOMContentLoaded event listener, to ensure that the DOM elements which we  are trying to interact with in our JavaScript code actually exist.  */
 document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", addItemSubmit);
-  itemList.addEventListener("click", onDeleteClick);
+  itemList.addEventListener("click", onDeleteAndEditClick);
   clearBtn.addEventListener("click", onClearBtnClick);
   filterInput.addEventListener("input", filterItems);
   displayListItems();

@@ -91,6 +91,10 @@ header h1 {
   font-size: 1rem;
 }
 
+.edit-mode {
+  color: #ccc;
+}
+
 .btn:hover {
   background-color: #444;
 }
@@ -140,7 +144,7 @@ header h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 45%;
+  width: 100%;
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 10px 15px;
@@ -148,7 +152,7 @@ header h1 {
   font-weight: 700;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 600px) {
   .items li {
     width: 100%;
   }
